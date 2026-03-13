@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Corn Fusion Lagos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════ RESET & BASE ═══════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;height:100%}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f8fafc;color:#0f172a;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;position:relative}
+input,select,button,textarea{font-family:inherit}
+::-webkit-scrollbar{display:none}
+img{display:block}
+
+/* ═══════════════ TOKENS ═══════════════ */
+:root{
+  --green:#3a9e3f;--green-dark:#2d7d32;--green-light:#e8f5e9;
+  --amber:#f59e0b;--navy:#0f172a;--navy-mid:#1e293b;
+  --white:#fff;--gray50:#f8fafc;--gray100:#f1f5f9;--gray200:#e2e8f0;
+  --gray300:#cbd5e1;--gray400:#94a3b8;--gray500:#64748b;--gray700:#334155;
+  --pink:#ec4899;--red:#ef4444;--purple:#7c3aed;--purple-dark:#6d28d9;
+  --shadow-xs:0 1px 4px rgba(0,0,0,.06);
+  --shadow-sm:0 2px 10px rgba(0,0,0,.07);
+  --shadow-md:0 4px 20px rgba(0,0,0,.10);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.13);
+  --shadow-xl:0 16px 48px rgba(0,0,0,.16);
+  --shadow-green:0 4px 16px rgba(58,158,63,.38);
+  --shadow-purple:0 4px 20px rgba(124,58,237,.42);
+  --radius:22px;
+}
+
+/* ═══════════════ ANIMATIONS ═══════════════ */
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes shimmer{from{background-position:-600px 0}to{background-position:600px 0}}
+@keyframes chatSlide{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes badgePop{0%{transform:scale(.4)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+@keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* ═══════════════ PAGES ═══════════════ */
+.page{display:none;padding-bottom:80px;animation:slideUp .32s cubic-bezier(.22,1,.36,1) both}
+.page.active{display:block}
+
+/* ═══════════════ STICKY HEADER ═══════════════ */
+.page-header{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  padding:16px 20px 18px;display:flex;align-items:center;gap:12;min-height:64px;
+  box-shadow:var(--shadow-sm);position:sticky;top:0;z-index:100;
+}
+.page-header .title{flex:1;text-align:center;color:#fff;font-weight:900;font-size:17px;letter-spacing:-.3px}
+.page-header .subtitle{color:rgba(255,255,255,.65);font-size:11px;margin-top:2px;text-align:center}
+.back-btn{background:rgba(255,255,255,.18);border:none;border-radius:12px;width:38px;height:38px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);flex-shrink:0;transition:background .2s}
+.back-btn:hover{background:rgba(255,255,255,.28)}
+
+/* ═══════════════ BOTTOM NAV ═══════════════ */
+#bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;background:#fff;border-top:1px solid var(--gray100);
+  display:flex;z-index:200;box-shadow:0 -4px 24px rgba(0,0,0,.09);
+  padding-bottom:env(safe-area-inset-bottom,8px);
+}
+.nav-btn{flex:1;padding:11px 4px 9px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;transition:transform .15s}
+.nav-btn.active{transform:translateY(-2px)}
+.nav-btn svg{transition:stroke .2s}
+.nav-btn span{font-size:10px;font-weight:500;color:var(--gray400);letter-spacing:.02em;transition:color .2s,font-weight .2s}
+.nav-btn.active span{color:var(--pink);font-weight:800}
+.nav-btn .indicator{position:absolute;bottom:0;width:24px;height:3px;background:var(--pink);border-radius:3px 3px 0 0;display:none}
+.nav-btn.active .indicator{display:block}
+.cart-badge{position:absolute;top:6px;right:calc(50% - 18px);background:var(--red);color:#fff;font-size:9px;font-weight:900;border-radius:10px;min-width:16px;height:16px;padding:0 4px;display:flex;align-items:center;justify-content:center;animation:badgePop .3s ease}
+
+/* ═══════════════ TOAST ═══════════════ */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#fff;border-left:4px solid var(--green);border-radius:18px;padding:13px 22px;box-shadow:var(--shadow-lg);z-index:999;display:flex;align-items:center;gap:10px;white-space:nowrap;animation:toastIn .28s cubic-bezier(.34,1.56,.64,1);max-width:88vw;pointer-events:none}
+#toast span{font-size:14px;font-weight:700;color:var(--navy)}
+
+/* ═══════════════ SHIMMER ═══════════════ */
+.shimmer{background:linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 50%,#f1f5f9 75%);background-size:600px 100%;animation:shimmer 1.4s infinite}
+
+/* ═══════════════ FOOD IMAGE ═══════════════ */
+.food-img-wrap{position:relative;overflow:hidden;background:linear-gradient(135deg,#1b5e20,#2d7d32)}
+.food-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease}
+.food-img-wrap img.loaded{opacity:1}
+.food-img-wrap .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:32px;transition:opacity .3s}
+.food-img-wrap img.loaded~.ph{opacity:0;pointer-events:none}
+
+/* ═══════════════ TAGS ═══════════════ */
+.tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.04em}
+
+/* ═══════════════ PILL FILTER ═══════════════ */
+.pill{padding:9px 20px;border-radius:40px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;border:1.5px solid var(--gray200);background:#fff;color:var(--gray500);transition:all .18s ease;box-shadow:var(--shadow-xs)}
+.pill.active{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;border:none;box-shadow:var(--shadow-green);transform:scale(1.04)}
+
+/* ═══════════════ CARDS ═══════════════ */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-sm);border:1px solid var(--gray100);transition:transform .18s ease,box-shadow .18s ease}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+
+/* ═══════════════ MENU CARD ═══════════════ */
+.menu-card{display:flex;overflow:hidden;margin-bottom:16px}
+.menu-card .thumb{width:140px;min-height:148px;flex-shrink:0;position:relative}
+.menu-card .body{flex:1;padding:16px 16px 14px 14px;display:flex;flex-direction:column;gap:7px}
+.menu-card .name{font-weight:900;font-size:15px;color:var(--navy);line-height:1.3}
+.menu-card .desc{font-size:12px;color:var(--gray400);line-height:1.6;flex:1}
+.menu-card .price{font-size:19px;font-weight:900;color:var(--navy);letter-spacing:-.5px}
+.menu-card .cat-badge{position:absolute;bottom:8px;left:8px;background:rgba(15,23,42,.72);border-radius:10px;padding:2px 8px;font-size:9px;font-weight:800;color:#fff;letter-spacing:.06em;backdrop-filter:blur(6px);text-transform:uppercase;z-index:1}
+
+/* ═══════════════ TREND CARD ═══════════════ */
+.trend-card{min-width:182px;max-width:182px;border-radius:var(--radius);overflow:hidden;flex-shrink:0;scroll-snap-align:start}
+.trend-card .img-wrap{height:124px;position:relative}
+.trend-card .price-badge{position:absolute;top:10px;right:10px;background:rgba(15,23,42,.80);backdrop-filter:blur(8px);border-radius:10px;padding:3px 10px;font-size:12px;font-weight:900;color:#fff;z-index:1}
+.trend-card .body{padding:12px 14px 14px}
+
+/* ═══════════════ STARS ═══════════════ */
+.stars{display:flex;align-items:center;gap:3px}
+.stars .s{font-size:10px;color:var(--gray200)}
+.stars .s.on{color:var(--amber)}
+.stars .val{font-size:11px;font-weight:700;color:var(--gray700);margin-left:3px}
+.stars .cnt{font-size:11px;color:var(--gray400)}
+
+/* ═══════════════ BUTTONS ═══════════════ */
+.btn-green{background:linear-gradient(135deg,var(--green),var(--green-dark));border:none;border-radius:30px;padding:14px 28px;color:#fff;font-weight:900;font-size:14px;cursor:pointer;box-shadow:var(--shadow-green);transition:all .18s}
+.btn-green:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.btn-green:active{transform:scale(.97)}
+.btn-navy{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border:none;border-radius:18px;padding:16px;color:#fff;font-weight:900;font-size:15px;cursor:pointer;box-shadow:var(--shadow-md);transition:all .18s;width:100%}
+.add-btn{background:linear-gradient(135deg,var(--green),var(--green-dark));border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-green);transition:all .18s;flex-shrink:0}
+.add-btn:active{transform:scale(.88)}
+.like-btn{background:var(--gray100);border:1.5px solid var(--gray200);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.like-btn.liked{background:#fce7f3;border-color:#f9a8d4}
+
+/* ═══════════════ SEARCH BAR ═══════════════ */
+.search-bar{background:#fff;border-radius:18px;border:1.5px solid var(--gray200);display:flex;align-items:center;gap:10px;padding:0 16px;box-shadow:var(--shadow-xs);transition:border-color .2s}
+.search-bar:focus-within{border-color:var(--green)}
+.search-bar input{flex:1;padding:13px 0;border:none;outline:none;font-size:14px;color:var(--navy);background:transparent}
+.search-bar .clear{background:none;border:none;color:var(--gray400);cursor:pointer;font-size:16px;padding:4px}
+
+/* ═══════════════ HOME ═══════════════ */
+#hero{position:relative;overflow:hidden;min-height:440px}
+#hero .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
+#hero .hero-img.loaded{opacity:1}
+#hero .overlay{position:absolute;inset:0;background:linear-gradient(170deg,rgba(10,30,10,.38) 0%,rgba(20,70,20,.80) 50%,rgba(27,94,32,.97) 100%)}
+#hero .content{position:relative;z-index:1;padding:32px 22px 0}
+#hero .topbar{position:relative;z-index:1;padding:20px 22px 0;display:flex;justify-content:space-between;align-items:center}
+#hero .brand{color:#fff;font-weight:900;font-size:20px;letter-spacing:-.5px}
+#hero .loc{color:rgba(255,255,255,.6);font-size:11px;margin-top:2px}
+.badge-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);border-radius:20px;padding:5px 14px;backdrop-filter:blur(8px);margin-bottom:18px}
+.badge-pill span{color:#fff;font-size:12px;font-weight:700}
+.hero-h1{color:#fff;font-size:38px;font-weight:900;line-height:1.1;margin-bottom:4px}
+.hero-h2{color:#ffd54f;font-size:38px;font-weight:900;line-height:1.1;margin-bottom:18px}
+.hero-sub{color:rgba(255,255,255,.82);font-size:14px;line-height:1.7;margin-bottom:28px;max-width:290px}
+.hero-btns{display:flex;gap:12px;margin-bottom:0}
+.hero-stats{margin:28px 22px;background:rgba(255,255,255,.13);border-radius:20px;padding:18px 10px;display:flex;justify-content:space-around;backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.18)}
+.stat-item{text-align:center;flex:1}
+.stat-item .icon{font-size:20px;margin-bottom:4px}
+.stat-item .val{color:#fff;font-weight:900;font-size:16px}
+.stat-item .lbl{color:rgba(255,255,255,.6);font-size:10px;margin-top:1px}
+.stat-sep{width:1px;background:rgba(255,255,255,.2)}
+
+/* New arrival float */
+.new-arrival{margin:0 20px;margin-top:-24px;background:#fff;border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:space-between;border:1px solid var(--gray100)}
+.new-arrival .thumb{width:62px;height:62px;border-radius:16px;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow-sm);position:relative}
+.new-badge{background:rgba(239,68,68,.12);color:var(--red);font-size:9px;font-weight:900;padding:2px 8px;border-radius:10px;letter-spacing:.06em;display:inline-block;margin-bottom:3px}
+
+/* Section headers */
+.sec-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px}
+.sec-title{font-size:22px;font-weight:900;color:var(--navy);letter-spacing:-.4px}
+.sec-sub{font-size:12px;color:var(--gray400);margin-top:4px}
+.see-all{background:none;border:none;color:var(--green);font-weight:800;font-size:13px;cursor:pointer}
+
+/* Horizontal scroll */
+.h-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;margin-left:-2px;padding-left:2px}
+
+/* Category grid */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cat-btn{background:none;border:none;padding:0;cursor:pointer;border-radius:var(--radius);overflow:hidden;position:relative;height:134px;box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s}
+.cat-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.cat-btn .img-wrap{position:absolute;inset:0}
+.cat-btn .overlay{position:absolute;inset:0;background:linear-gradient(170deg,rgba(15,23,42,.04) 0%,rgba(15,23,42,.72) 100%)}
+.cat-btn .info{position:absolute;bottom:0;left:0;right:0;padding:12px 14px;text-align:left;z-index:1}
+.cat-btn .info strong{color:#fff;font-weight:900;font-size:16px;display:block}
+.cat-btn .info small{color:rgba(255,255,255,.78);font-size:11px;margin-top:2px;display:block}
+
+/* AI Banner */
+.ai-banner{background:linear-gradient(145deg,#0f172a 0%,#1e293b 60%,#0f3460 100%);border-radius:26px;padding:26px 24px;position:relative;overflow:hidden;box-shadow:var(--shadow-xl)}
+.ai-banner .blob{position:absolute;border-radius:50%}
+.ai-banner .content{position:relative;z-index:1}
+.ai-badge{display:inline-block;background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#78350f;font-size:10px;font-weight:900;padding:4px 14px;border-radius:20px;letter-spacing:.1em;margin-bottom:16px}
+.ai-banner h3{color:#fff;font-size:22px;font-weight:900;line-height:1.3;margin-bottom:10px}
+.ai-banner p{color:rgba(255,255,255,.6);font-size:13px;line-height:1.7;margin-bottom:22px}
+
+/* Why Us grid */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.why-item{background:var(--gray50);border-radius:18px;padding:18px 16px;border:1px solid var(--gray100)}
+.why-item .icon{font-size:28px;margin-bottom:10px}
+.why-item strong{font-weight:800;font-size:13px;color:var(--navy);display:block}
+.why-item small{font-size:11px;color:var(--gray400);margin-top:3px;display:block}
+
+/* ═══════════════ CART ═══════════════ */
+.cart-item{display:flex;align-items:center;gap:14px;background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow-sm);border:1px solid var(--gray100)}
+.cart-item .thumb{width:74px;height:74px;border-radius:18px;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow-xs);position:relative}
+.qty-btn{background:var(--gray100);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--gray700);transition:all .15s}
+.qty-btn.plus{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff}
+.qty-btn:active{transform:scale(.88)}
+.summary-card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--gray100);margin-bottom:14px}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray50)}
+.summary-row:last-child{border-bottom:none;padding-top:14px;margin-top:4px}
+.promo-row{display:flex;gap:10px;margin:4px 0 14px}
+.promo-input{flex:1;padding:13px 16px;border:1.5px solid var(--gray200);border-radius:18px;font-size:13px;outline:none;color:var(--navy);transition:border-color .2s}
+.promo-input:focus{border-color:var(--green)}
+.promo-btn{background:var(--navy);color:#fff;border:none;border-radius:18px;padding:13px 18px;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s}
+
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:80px 32px;text-align:center}
+.empty-icon{width:120px;height:120px;border-radius:60px;background:var(--gray100);display:flex;align-items:center;justify-content:center;margin-bottom:28px;font-size:52px}
+
+/* ═══════════════ PROFILE ═══════════════ */
+.profile-card{background:#fff;border-radius:24px;padding:22px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:18px;margin-bottom:16px;border:1px solid var(--gray100)}
+.avatar{width:74px;height:74px;border-radius:37px;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow-green);border:3px solid var(--green);position:relative}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat-card{background:#fff;border-radius:18px;padding:16px 12px;text-align:center;box-shadow:var(--shadow-xs);border:1px solid var(--gray100)}
+.stat-card .icon{font-size:22px;margin-bottom:4px}
+.stat-card .val{font-weight:900;font-size:18px;color:var(--navy)}
+.stat-card .lbl{font-size:10px;color:var(--gray400);font-weight:600}
+.invite-banner{border-radius:24px;overflow:hidden;margin-bottom:16px;position:relative;height:120px;box-shadow:0 4px 16px rgba(245,158,11,.35)}
+.invite-banner .img-wrap{position:absolute;inset:0}
+.invite-banner .overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,158,11,.90),rgba(251,191,36,.80))}
+.invite-banner .content{position:absolute;inset:0;padding:20px 22px;display:flex;align-items:center;justify-content:space-between}
+
+/* AI Sommelier block */
+.ai-block{background:linear-gradient(145deg,#0f172a,#1e293b);border-radius:26px;padding:24px 22px;margin-bottom:16px;box-shadow:var(--shadow-xl)}
+.ai-header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.ai-avatar{width:44px;height:44px;border-radius:22px;overflow:hidden;border:2px solid var(--green);flex-shrink:0;position:relative}
+.ai-divider{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+.mood-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.mood-btn{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;color:rgba(255,255,255,.65);font-weight:700;font-size:12px;cursor:pointer;text-align:left;transition:all .18s;font-family:inherit}
+.mood-btn.active{background:rgba(58,158,63,.22);border-color:var(--green);color:var(--green)}
+.ai-recs{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+.ai-rec-card{background:rgba(255,255,255,.06);border-radius:18px;padding:16px;border:1px solid rgba(58,158,63,.3);display:flex;align-items:center;gap:14px}
+.ai-rec-thumb{width:54px;height:54px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative}
+
+/* Book a Table */
+.book-card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:16px;border:1px solid var(--gray100)}
+.book-hero{height:110px;position:relative;overflow:hidden}
+.book-hero .overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(15,23,42,.58),rgba(45,125,50,.68))}
+.book-hero .label{position:absolute;bottom:16px;left:20px;z-index:1}
+.book-hero .label strong{color:#fff;font-weight:900;font-size:17px;display:block}
+.book-hero .label small{color:rgba(255,255,255,.78);font-size:12px;margin-top:2px;display:block}
+.book-body{padding:20px}
+.field-label{font-size:10px;color:var(--gray400);font-weight:800;margin-bottom:6px;letter-spacing:.06em}
+.field-input{width:100%;padding:13px 16px;border:1.5px solid var(--gray200);border-radius:16px;font-size:13px;outline:none;color:var(--navy);transition:border-color .2s;font-family:inherit}
+.field-input:focus{border-color:var(--green)}
+.field-select{width:100%;padding:11px 12px;border:1.5px solid var(--gray200);border-radius:14px;font-size:13px;outline:none;color:var(--navy);background:#fff;font-family:inherit;transition:border-color .2s}
+.field-select:focus{border-color:var(--green)}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+/* Settings rows */
+.setting-row{background:#fff;border-radius:20px;padding:16px 18px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-xs);cursor:pointer;border:1px solid var(--gray100);transition:transform .15s,box-shadow .15s}
+.setting-row:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.setting-icon{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px}
+
+/* ═══════════════ AI CHAT WIDGET ═══════════════ */
+#chat-widget{position:fixed;bottom:98px;right:16px;width:316px;background:#fff;border-radius:26px;box-shadow:var(--shadow-xl);z-index:300;overflow:hidden;border:1px solid var(--gray100);animation:chatSlide .28s cubic-bezier(.34,1.56,.64,1);display:none}
+#chat-widget.open{display:block}
+.chat-header{background:linear-gradient(135deg,var(--green),var(--green-dark));padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.chat-avatar{width:36px;height:36px;border-radius:18px;overflow:hidden;border:2px solid rgba(255,255,255,.3);position:relative;flex-shrink:0}
+.chat-online{display:flex;align-items:center;gap:4px;margin-top:1px}
+.chat-dot{width:6px;height:6px;border-radius:3px;background:#86efac}
+.chat-msgs{height:240px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#fafbfc}
+.msg{max-width:85%;font-size:13px;line-height:1.55;padding:10px 14px}
+.msg.ai{align-self:flex-start;background:#fff;color:var(--navy);border-radius:18px 18px 18px 4px;box-shadow:var(--shadow-xs)}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;border-radius:18px 18px 4px 18px;box-shadow:var(--shadow-green)}
+.chat-chips{padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chat-chip{background:var(--green-light);border:1px solid rgba(58,158,63,.18);border-radius:16px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;white-space:nowrap;font-family:inherit}
+.chat-input-row{padding:10px 14px 16px;display:flex;gap:8px;border-top:1px solid var(--gray100);margin-top:8px}
+.chat-input{flex:1;padding:10px 14px;border:1.5px solid var(--gray200);border-radius:18px;font-size:13px;outline:none;color:var(--navy);font-family:inherit;transition:border-color .2s}
+.chat-input:focus{border-color:var(--green)}
+.chat-send{background:linear-gradient(135deg,var(--green),var(--green-dark));border:none;border-radius:18px;padding:10px 16px;color:#fff;cursor:pointer;font-weight:900;box-shadow:var(--shadow-green);transition:all .18s}
+.chat-send:disabled{opacity:.5}
+
+/* AI FAB */
+#ai-fab{position:fixed;bottom:90px;right:16px;width:54px;height:54px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));border:none;border-radius:27px;cursor:pointer;font-size:22px;box-shadow:var(--shadow-purple);z-index:250;display:flex;align-items:center;justify-content:center;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+#ai-fab.open{transform:rotate(20deg) scale(1.05)}
+
+/* ═══════════════ SPINNER ═══════════════ */
+.spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.2);border-top:3px solid rgba(255,255,255,.9);border-radius:50%;animation:spin .75s linear infinite;display:inline-block}
+
+/* ═══════════════ CONFIRMED SCREEN ═══════════════ */
+#confirmed-screen{display:none;flex-direction:column;align-items:center;padding:70px 32px;text-align:center}
+#confirmed-screen.show{display:flex}
+
+/* ═══════════════ BOOKED SCREEN ═══════════════ */
+.booked-state{text-align:center;padding:20px 0}
+
+/* RIPPLE */
+.ripple-wrap{position:relative;overflow:hidden}
+.ripple-el{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);transform:scale(0);animation:ripple .55s linear;pointer-events:none}
+
+/* UTILS */
+.flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}.gap-14{gap:14px}
+.mt-4{margin-top:4px}.mt-6{margin-top:6px}.mt-8{margin-top:8px}.mt-10{margin-top:10px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}
+.mb-6{margin-bottom:6px}.mb-8{margin-bottom:8px}.mb-10{margin-bottom:10px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-18{margin-bottom:18px}
+.w-full{width:100%}.text-center{text-align:center}
+.fw-900{font-weight:900}.fw-800{font-weight:800}.fw-700{font-weight:700}
+.fs-11{font-size:11px}.fs-12{font-size:12px}.fs-13{font-size:13px}.fs-14{font-size:14px}.fs-16{font-size:16px}.fs-17{font-size:17px}.fs-20{font-size:20px}
+.c-navy{color:var(--navy)}.c-green{color:var(--green)}.c-gray4{color:var(--gray400)}.c-gray5{color:var(--gray500)}.c-white{color:#fff}
+.lh-16{line-height:1.6}.lh-17{line-height:1.7}
+.gold-badge{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;font-size:11px;font-weight:800;padding:3px 12px;border-radius:20px;display:inline-block}
+.section-pad{padding:32px 20px 0}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div id="toast" style="display:none"><span id="toast-msg"></span></div>
+
+<!-- ═══════════════ AI FAB ═══════════════ -->
+<button id="ai-fab" onclick="toggleChat(this)" title="AI Sommelier">🤖</button>
+
+<!-- ═══════════════ AI CHAT WIDGET ═══════════════ -->
+<div id="chat-widget">
+  <div class="chat-header">
+    <div class="flex items-center gap-10">
+      <div class="chat-avatar food-img-wrap">
+        <img data-src="https://i.pravatar.cc/150?img=47" alt="AI"/>
+        <div class="ph">🤖</div>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:900;font-size:14px">AI Sommelier</div>
+        <div class="chat-online"><div class="chat-dot"></div><span style="color:rgba(255,255,255,.7);font-size:10px">Online · Instant replies</span></div>
+      </div>
+    </div>
+    <button onclick="toggleChat()" style="background:rgba(255,255,255,.18);border:none;border-radius:10px;width:30px;height:30px;color:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <div class="chat-chips">
+    <button class="chat-chip" onclick="setChip('Best seller?')">Best seller?</button>
+    <button class="chat-chip" onclick="setChip('Vegetarian options')">Vegetarian options</button>
+    <button class="chat-chip" onclick="setChip('Spicy dishes')">Spicy dishes</button>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-in" placeholder="Ask me anything…" onkeydown="if(event.key==='Enter')sendChat()"/>
+    <button class="chat-send" id="chat-send-btn" onclick="sendChat()">↑</button>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGES ═══════════════ -->
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <!-- Hero -->
+  <section id="hero">
+    <img class="hero-img" id="hero-img" alt="hero food"/>
+    <div class="overlay"></div>
+    <div class="topbar">
+      <div>
+        <div class="brand">🌽 Corn Fusion</div>
+        <div class="loc">📍 Lekki, Lagos</div>
+      </div>
+      <button style="background:rgba(255,255,255,.18);border:none;border-radius:20px;padding:8px 16px;color:#fff;font-weight:700;font-size:12px;cursor:pointer;backdrop-filter:blur(8px)">🔗 Share</button>
+    </div>
+    <div class="content">
+      <div class="badge-pill"><span style="color:#ffd54f;font-size:13px">★</span><span>#1 Corn Spot in Lagos · 4.9 ★</span></div>
+      <div class="hero-h1">Fresh Corn.</div>
+      <div class="hero-h2">Reimagined. ✨</div>
+      <p class="hero-sub">Traditional Nigerian flavours reimagined through modern culinary artistry — crafted daily with love.</p>
+      <div class="hero-btns">
+        <button class="btn-green ripple-wrap" onclick="navTo('menu');ripple(event,this)" style="border-radius:30px">Order Now 🛒</button>
+        <button onclick="navTo('menu')" style="background:rgba(255,255,255,.18);color:#fff;border:none;border-radius:30px;padding:14px 20px;font-weight:700;font-size:14px;cursor:pointer;backdrop-filter:blur(8px)">View Menu</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="icon">⚡</div><div class="val">28 min</div><div class="lbl">Avg Delivery</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="icon">⭐</div><div class="val">4.9</div><div class="lbl">Rating</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat-item"><div class="icon">🍽</div><div class="val">12+</div><div class="lbl">Corn Dishes</div></div>
+    </div>
+  </section>
+
+  <!-- New Arrival -->
+  <div class="new-arrival">
+    <div class="flex items-center gap-14">
+      <div class="thumb food-img-wrap" id="na-thumb">
+        <img data-src="" id="na-img" alt="tacos"/>
+        <div class="ph">🌮</div>
+      </div>
+      <div>
+        <span class="new-badge">🔥 NEW</span>
+        <div style="font-weight:900;color:var(--navy);font-size:14px">Spicy Corn Tacos</div>
+        <div style="color:var(--gray400);font-size:12px;margin-top:1px">Street-style · Just dropped</div>
+      </div>
+    </div>
+    <button class="ripple-wrap" onclick="navTo('menu');ripple(event,this)" style="background:linear-gradient(135deg,var(--green),var(--green-dark));border:none;border-radius:14px;padding:10px 16px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;box-shadow:var(--shadow-green);white-space:nowrap">Order →</button>
+  </div>
+
+  <!-- Trending -->
+  <div class="section-pad">
+    <div class="sec-header">
+      <div><div class="sec-title">Trending Now 🔥</div><div class="sec-sub">Top picks from our kitchen this week</div></div>
+      <button class="see-all" onclick="navTo('menu')">See All →</button>
+    </div>
+    <div class="h-scroll" id="trend-scroll"></div>
+  </div>
+
+  <!-- Categories -->
+  <div class="section-pad">
+    <div style="font-size:22px;font-weight:900;color:var(--navy);letter-spacing:-.4px;margin-bottom:6px">Explore Menu</div>
+    <div style="font-size:12px;color:var(--gray400);margin-bottom:18px">Browse by category</div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </div>
+
+  <!-- AI Banner -->
+  <div class="section-pad">
+    <div class="ai-banner">
+      <div class="blob" style="top:-30px;right:-30px;width:120px;height:120px;background:rgba(58,158,63,.15)"></div>
+      <div class="blob" style="bottom:-20px;left:20px;width:80px;height:80px;background:rgba(245,158,11,.10)"></div>
+      <div class="content">
+        <div class="ai-badge">✨ AI-POWERED</div>
+        <h3>Not sure what to eat?</h3>
+        <p>Our AI Sommelier reads your mood and handpicks the perfect corn dish — personalized just for you.</p>
+        <button class="ripple-wrap" onclick="navTo('profile');ripple(event,this)" style="background:#fff;color:var(--navy);border:none;border-radius:24px;padding:13px 22px;font-weight:900;font-size:14px;cursor:pointer;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px">
+          <span>Try AI Recommendation</span><span>🤖</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why Us -->
+  <div class="section-pad" style="padding-bottom:0">
+    <div style="font-size:17px;font-weight:900;color:var(--navy);margin-bottom:18px">Why Corn Fusion?</div>
+    <div class="why-grid">
+      <div class="why-item"><div class="icon">⚡</div><strong>Fast Delivery</strong><small>28 min average</small></div>
+      <div class="why-item"><div class="icon">🌽</div><strong>Farm Fresh</strong><small>Sourced daily</small></div>
+      <div class="why-item"><div class="icon">🤖</div><strong>AI Curated</strong><small>Smart picks</small></div>
+      <div class="why-item"><div class="icon">⭐</div><strong>4.9 ★ Rated</strong><small>2,000+ reviews</small></div>
+    </div>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- MENU -->
+<div id="page-menu" class="page">
+  <div class="page-header">
+    <button class="back-btn" onclick="navTo('home')">←</button>
+    <div><div class="title">Our Menu</div><div class="subtitle" id="menu-subtitle">12 items</div></div>
+    <div style="width:38px"></div>
+  </div>
+  <div style="padding:18px 20px 0">
+    <div class="search-bar">
+      <span style="color:var(--gray400);font-size:16px">🔍</span>
+      <input id="search-in" placeholder="Search dishes…" oninput="filterMenu()" style="flex:1;padding:13px 0;border:none;outline:none;font-size:14px;color:var(--navy);background:transparent"/>
+      <button class="clear" id="search-clear" onclick="clearSearch()" style="display:none">✕</button>
+    </div>
+  </div>
+  <div style="padding:14px 20px 0;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px" id="filter-pills"></div>
+  <div style="padding:18px 20px 0" id="menu-list"></div>
+</div>
+
+<!-- CART -->
+<div id="page-cart" class="page">
+  <div class="page-header">
+    <div style="width:38px"></div>
+    <div><div class="title">Your Bag</div><div class="subtitle" id="cart-subtitle"></div></div>
+    <div style="width:38px"></div>
+  </div>
+  <div id="cart-empty" class="empty-state" style="display:none">
+    <div class="empty-icon">🛒</div>
+    <div style="font-size:22px;font-weight:900;color:var(--navy);margin-bottom:12px">Your bag is empty</div>
+    <p style="font-size:14px;color:var(--gray400);line-height:1.7;margin-bottom:36px;max-width:260px">You haven't added any corn delicacies yet. Let's fix that!</p>
+    <button class="btn-green ripple-wrap" onclick="navTo('menu');ripple(event,this)" style="padding:15px 46px">Browse Menu</button>
+  </div>
+  <div id="cart-content" style="padding:20px 20px 0;display:none">
+    <div id="cart-items"></div>
+    <div class="promo-row">
+      <input class="promo-input" id="promo-in" placeholder="Promo code (try CORN10)"/>
+      <button class="promo-btn ripple-wrap" id="promo-btn" onclick="applyPromo();ripple(event,this)">Apply</button>
+    </div>
+    <div class="summary-card">
+      <div style="font-size:15px;font-weight:900;color:var(--navy);margin-bottom:16px">Order Summary</div>
+      <div class="summary-row"><span style="font-size:13px;color:var(--gray500)">Subtotal</span><span id="sum-sub" style="font-size:13px;font-weight:700;color:var(--gray700)"></span></div>
+      <div class="summary-row" id="sum-disc-row" style="display:none"><span style="font-size:13px;color:var(--gray500)">Discount (10%)</span><span id="sum-disc" style="font-size:13px;font-weight:700;color:var(--green)"></span></div>
+      <div class="summary-row"><span style="font-size:13px;color:var(--gray500)">Delivery</span><span style="font-size:13px;font-weight:700;color:var(--gray700)">₦500</span></div>
+      <div class="summary-row"><span style="font-size:16px;font-weight:900;color:var(--navy)">Total</span><span id="sum-total" style="font-size:16px;font-weight:900;color:var(--green)"></span></div>
+    </div>
+    <button class="btn-green ripple-wrap w-full" id="checkout-btn" onclick="checkout();ripple(event,this)" style="border-radius:22px;padding:18px;font-size:16px;margin-bottom:10px">Place Order</button>
+    <div style="text-align:center;font-size:11px;color:var(--gray400);padding-bottom:8px">🔒 Secure checkout · Free returns within 15 min</div>
+  </div>
+  <!-- Order Confirmed -->
+  <div id="confirmed-screen">
+    <div style="font-size:80px;margin-bottom:24px;animation:pulse 1s ease infinite">🎉</div>
+    <div style="font-weight:900;color:var(--navy);font-size:24px;margin-bottom:12px">Order Placed!</div>
+    <p style="color:var(--gray400);font-size:14px;line-height:1.7;margin-bottom:10px;max-width:260px">Your corn feast is being prepared. Estimated arrival in <strong>28 minutes</strong>.</p>
+    <div style="background:linear-gradient(135deg,var(--green),var(--green-dark));border-radius:20px;padding:16px 28px;margin:16px 0 36px;text-align:center">
+      <div style="color:rgba(255,255,255,.75);font-size:12px">Total paid</div>
+      <div id="confirmed-total" style="color:#fff;font-weight:900;font-size:24px"></div>
+    </div>
+    <button class="btn-green ripple-wrap" onclick="backHome();ripple(event,this)" style="padding:15px 44px">Back to Home</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="page-profile" class="page">
+  <div class="page-header">
+    <div style="width:38px"></div>
+    <div><div class="title">My Profile</div><div class="subtitle">Gold Member · Food Enthusiast</div></div>
+    <div style="width:38px"></div>
+  </div>
+  <div style="padding:22px 20px 0">
+
+    <!-- Profile card -->
+    <div class="profile-card">
+      <div class="avatar food-img-wrap">
+        <img data-src="https://i.pravatar.cc/150?img=12" alt="avatar"/>
+        <div class="ph" style="font-size:28px">👤</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--gray400);margin-bottom:3px">Welcome back 👋</div>
+        <div style="font-size:20px;font-weight:900;color:var(--navy)">Food Enthusiast</div>
+        <div style="margin-top:8px"><span class="gold-badge">⭐ Gold Member</span></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="icon">📦</div><div class="val">24</div><div class="lbl">Orders</div></div>
+      <div class="stat-card"><div class="icon">❤️</div><div class="val">8</div><div class="lbl">Favorites</div></div>
+      <div class="stat-card"><div class="icon">⭐</div><div class="val">340</div><div class="lbl">Rewards</div></div>
+    </div>
+
+    <!-- Invite -->
+    <div class="invite-banner">
+      <div class="img-wrap food-img-wrap" id="invite-img-wrap">
+        <img data-src="" id="invite-img" alt="invite"/>
+        <div class="ph">🎁</div>
+      </div>
+      <div class="overlay"></div>
+      <div class="content">
+        <div>
+          <div style="color:#fff;font-weight:900;font-size:17px;margin-bottom:5px">Invite Friends 🎁</div>
+          <div style="color:rgba(255,255,255,.9);font-size:12px;line-height:1.5">Share the love of corn &<br>earn exclusive rewards!</div>
+        </div>
+        <button style="background:rgba(255,255,255,.25);border:none;border-radius:22px;width:48px;height:48px;cursor:pointer;font-size:22px;backdrop-filter:blur(8px)">🔗</button>
+      </div>
+    </div>
+
+    <!-- AI Sommelier -->
+    <div class="ai-block">
+      <div class="ai-header">
+        <div class="ai-avatar food-img-wrap"><img data-src="https://i.pravatar.cc/150?img=47" alt="ai"/><div class="ph" style="font-size:20px">🤖</div></div>
+        <div>
+          <div style="color:#fff;font-weight:900;font-size:17px">AI Taste Sommelier</div>
+          <div style="color:rgba(255,255,255,.45);font-size:11px;margin-top:1px">Powered by Claude AI</div>
+        </div>
+      </div>
+      <div class="ai-divider"></div>
+      <p style="color:rgba(255,255,255,.65);font-size:13px;margin-bottom:18px;line-height:1.7">Tell us your mood and our AI will curate the perfect corn dish for you.</p>
+      <div style="color:#fff;font-weight:800;font-size:14px;margin-bottom:12px">How are you feeling today?</div>
+      <div class="mood-grid">
+        <button class="mood-btn" data-mood="comfort" onclick="toggleMood(this)">😌 Comfort &amp; Warm</button>
+        <button class="mood-btn" data-mood="spicy" onclick="toggleMood(this)">🔥 I Love Spicy</button>
+        <button class="mood-btn" data-mood="vegetarian" onclick="toggleMood(this)">🌱 Vegetarian</button>
+        <button class="mood-btn" data-mood="seafood" onclick="toggleMood(this)">🦐 Seafood Lover</button>
+        <button class="mood-btn" data-mood="sweet" onclick="toggleMood(this)">🍬 Sweet Tooth</button>
+      </div>
+      <button id="ai-rec-btn" class="ripple-wrap" onclick="getAIRecs();ripple(event,this)" style="width:100%;background:linear-gradient(135deg,var(--green),var(--green-dark));border:none;border-radius:18px;padding:16px;color:#fff;font-weight:900;font-size:15px;cursor:pointer;box-shadow:var(--shadow-green);display:flex;align-items:center;justify-content:center;gap:10px;font-family:inherit">
+        ✨ Get Recommendations
+      </button>
+      <div id="ai-recs-out"></div>
+    </div>
+
+    <!-- Book a Table -->
+    <div class="book-card">
+      <div class="book-hero">
+        <div class="food-img-wrap" style="position:absolute;inset:0" id="book-img-wrap">
+          <img data-src="" id="book-img" alt="restaurant"/>
+          <div class="ph" style="font-size:28px">🍽</div>
+        </div>
+        <div class="overlay"></div>
+        <div class="label"><strong>🗓 Reserve a Table</strong><small>Book your spot at Corn Fusion</small></div>
+      </div>
+      <div class="book-body" id="book-body">
+        <input class="field-input w-full mb-12" id="book-name" placeholder="Your name" style="margin-bottom:12px"/>
+        <div class="field-grid">
+          <div><div class="field-label">DATE</div><input type="date" class="field-select w-full" id="book-date"/></div>
+          <div><div class="field-label">GUESTS</div>
+            <select class="field-select w-full" id="book-guests">
+              <option>1 Person</option><option selected>2 People</option><option>3 People</option><option>4 People</option><option>5+ People</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:18px"><div class="field-label">TIME</div>
+          <select class="field-select w-full" id="book-time">
+            <option>12:00 PM</option><option>1:00 PM</option><option>6:00 PM</option><option selected>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option>
+          </select>
+        </div>
+        <button class="btn-navy ripple-wrap" onclick="confirmBooking();ripple(event,this)">Confirm Reservation</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="setting-row" onclick="showToast('⚙️ Coming soon!')">
+      <div class="flex items-center gap-14"><div class="setting-icon" style="background:#eff6ff">⚙️</div><div><div style="font-weight:800;color:var(--navy);font-size:14px">Account Settings</div><div style="font-size:11px;color:var(--gray400);margin-top:2px">Privacy &amp; preferences</div></div></div>
+      <span style="color:var(--gray300);font-size:22px">›</span>
+    </div>
+    <div class="setting-row" onclick="showToast('❤️ Coming soon!')">
+      <div class="flex items-center gap-14"><div class="setting-icon" style="background:#fdf2f8">❤️</div><div><div style="font-weight:800;color:var(--navy);font-size:14px">Favorites</div><div style="font-size:11px;color:var(--gray400);margin-top:2px">Your saved dishes</div></div></div>
+      <span style="color:var(--gray300);font-size:22px">›</span>
+    </div>
+    <div class="setting-row" onclick="showToast('🎁 340 pts — Gold tier!')">
+      <div class="flex items-center gap-14"><div class="setting-icon" style="background:#fefce8">🎁</div><div><div style="font-weight:800;color:var(--navy);font-size:14px">Rewards &amp; Points</div><div style="font-size:11px;color:var(--gray400);margin-top:2px">340 pts · Gold tier</div></div></div>
+      <span style="color:var(--gray300);font-size:22px">›</span>
+    </div>
+    <div class="setting-row" onclick="showToast('👋 See you soon!')">
+      <div class="flex items-center gap-14"><div class="setting-icon" style="background:#f8fafc">↩️</div><div><div style="font-weight:800;color:var(--navy);font-size:14px">Log Out</div><div style="font-size:11px;color:var(--gray400);margin-top:2px">See you soon!</div></div></div>
+      <span style="color:var(--gray300);font-size:22px">›</span>
+    </div>
+
+    <div style="text-align:center;color:var(--gray400);font-size:12px;padding:20px 0 4px">Corn Fusion App v2.0.0 · Made with ❤️ in Lagos</div>
+  </div>
+</div>
+
+<!-- ═══════════════ BOTTOM NAV ═══════════════ -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" data-page="home" onclick="navTo('home')">
+    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    <span>Home</span><div class="indicator"></div>
+  </button>
+  <button class="nav-btn" data-page="menu" onclick="navTo('menu')">
+    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+    <span>Menu</span><div class="indicator"></div>
+  </button>
+  <button class="nav-btn" data-page="cart" onclick="navTo('cart')" id="nav-cart">
+    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+    <span>Cart</span><div class="indicator"></div>
+  </button>
+  <button class="nav-btn" data-page="profile" onclick="navTo('profile')">
+    <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    <span>Me</span><div class="indicator"></div>
+  </button>
+</nav>
+
+<!-- ═══════════════ JAVASCRIPT ═══════════════ */
+<script>
+/* ── DATA ── */
+const TAG_COLORS={Vegetarian:"#16a34a",Vegan:"#15803d",Comfort:"#d97706",Spicy:"#dc2626",Meat:"#9f1239",Hearty:"#92400e",Traditional:"#7c3aed",Breakfast:"#0369a1",Sweet:"#db2777",Cold:"#0891b2",Seafood:"#0e7490","Street Food":"#b45309",New:"#dc2626",Cocktail:"#6d28d9",Smoky:"#374151",Herbal:"#166534",Rich:"#92400e",Dessert:"#be185d"};
+
+const MENU=[
+  {id:1, name:"Golden Corn Chowder",         price:4500,desc:"Creamy sweet corn soup with russet potatoes, smoked paprika & fresh herbs.",tags:["Vegetarian","Comfort"],    cat:"starters",rating:4.7,reviews:89,  mealQ:"Chowder"},
+  {id:2, name:"Spicy Suya Corn Ribs",         price:3500,desc:"Fried corn ribs dusted with yaji suya spice & served with chilli dip.",   tags:["Vegan","Spicy"],          cat:"starters",rating:4.9,reviews:214, mealQ:"Kebab"},
+  {id:3, name:"Maize-in-the-Corn Burger",     price:8500,desc:"Juicy beef patty topped with a crispy corn bun, jalapeño aioli & onion.", tags:["Meat","Hearty"],          cat:"mains",   rating:4.8,reviews:176, mealQ:"Burger"},
+  {id:4, name:"Adalu Special (Corn & Beans)", price:5000,desc:"A rich savory pottage of sweet corn and black-eyed beans in palm oil.",    tags:["Traditional","Vegetarian"],cat:"mains",  rating:4.6,reviews:132, mealQ:"Stew"},
+  {id:5, name:"Lagos Roasted Plantain & Corn",price:4000,desc:"Classic roadside bole (roasted plantain) paired with spiced corn.",        tags:["Street Food","Vegan"],    cat:"mains",   rating:4.8,reviews:298, mealQ:"Rice"},
+  {id:6, name:"Pap & Akara Combo",            price:3000,desc:"Smooth corn pudding (Ogi) served with fluffy golden bean cakes.",          tags:["Breakfast","Traditional"],cat:"starters",rating:4.8,reviews:120, mealQ:"Pancakes"},
+  {id:7, name:"Sweet Corn Ice Cream",         price:4000,desc:"Homemade sweet corn ice cream with caramel ribbons & crushed waffle cone.",tags:["Sweet","Cold"],           cat:"dessert", rating:4.9,reviews:203, mealQ:"Ice Cream"},
+  {id:8, name:"Cornfusion Sundae",            price:3500,desc:"Creamy vanilla gelato swirled with roasted corn caramel & chocolate.",     tags:["Dessert","Rich"],         cat:"dessert", rating:4.7,reviews:88,  mealQ:"Chocolate"},
+  {id:9, name:"Corn Silk Lemonade",           price:1800,desc:"Refreshing lemonade brewed with corn silk, ginger & fresh citrus.",        tags:["Cold","Herbal"],          cat:"drinks",  rating:4.5,reviews:67,  mealQ:"Lemonade"},
+  {id:10,name:"Smoky Corn Cocktail",          price:2500,desc:"Artisan smoked corn-infused spirit with muddled mint & citrus bitters.",   tags:["Cocktail","Smoky"],       cat:"drinks",  rating:4.6,reviews:91,  mealQ:"Fruit"},
+  {id:11,name:"Shrimp Corn Suya",             price:7500,desc:"Grilled tiger shrimps on corn skewers with suya spice & mango salsa.",     tags:["Seafood","Spicy"],        cat:"mains",   rating:4.9,reviews:154, mealQ:"Prawn"},
+  {id:12,name:"Spicy Corn Tacos",             price:3200,desc:"Street-style tacos with crispy corn tortilla, guac, pico de gallo & jalapeños.",tags:["New","Spicy"],      cat:"starters",rating:4.8,reviews:42,  mealQ:"Tacos"},
+];
+
+const CATS=["all","starters","mains","dessert","drinks"];
+const DELIVERY=500;
+
+/* ── STATE ── */
+let cart={}, liked={}, currentCat="all", promoApplied=false, chatOpen=false;
+const liveImgs={}; // keyed by item id + special keys
+
+/* ── FETCH REAL FOOD IMAGES from TheMealDB ── */
+async function fetchMealImg(q){
+  try{
+    const r=await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(q)}`);
+    const d=await r.json();
+    return d.meals?.[0]?.strMealThumb||null;
+  }catch{return null}
+}
+
+async function loadAllImages(){
+  // Hero
+  const heroUrl=await fetchMealImg("Chicken");
+  if(heroUrl){const el=document.getElementById('hero-img');el.src=heroUrl;el.onload=()=>el.classList.add('loaded')}
+
+  // Per-item images
+  for(const item of MENU){
+    const url=await fetchMealImg(item.mealQ);
+    if(url){liveImgs[item.id]=url}
+  }
+
+  // New arrival thumb
+  const tacosUrl=liveImgs[12];
+  if(tacosUrl){const el=document.getElementById('na-img');el.src=tacosUrl;el.onload=()=>el.classList.add('loaded')}
+
+  // Invite banner
+  const invUrl=await fetchMealImg("Chocolate");
+  if(invUrl){const el=document.getElementById('invite-img');el.src=invUrl;el.onload=()=>el.classList.add('loaded')}
+
+  // Book a table
+  const restUrl=await fetchMealImg("Beef");
+  if(restUrl){const el=document.getElementById('book-img');el.src=restUrl;el.onload=()=>el.classList.add('loaded')}
+
+  // Re-render once images loaded
+  renderTrend(); renderMenu(); renderCatGrid(); renderCart();
+}
+
+/* ── NAVIGATION ── */
+function navTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.toggle('active',b.dataset.page===page);
+    const ic=b.querySelector('svg');
+    ic.style.stroke=b.dataset.page===page?'#ec4899':'#94a3b8';
+  });
+  if(page==='cart')renderCart();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── HELPERS ── */
+function makeTag(label){
+  const c=TAG_COLORS[label]||'#64748b';
+  return `<span class="tag" style="background:${c}1a;color:${c};border:1px solid ${c}28">${label}</span>`;
+}
+function makeStars(rating,reviews,size=11){
+  let s='<div class="stars">';
+  for(let i=1;i<=5;i++) s+=`<span class="s${i<=Math.round(rating)?' on':''}" style="font-size:${size-1}px">★</span>`;
+  s+=`<span class="val" style="font-size:${size}px">${rating}</span><span class="cnt" style="font-size:${size}px">(${reviews}+)</span></div>`;
+  return s;
+}
+function fmtPrice(n){return '₦'+n.toLocaleString()}
+function makeFoodImg(src,alt,emj='🌽'){
+  return `<div class="food-img-wrap" style="position:absolute;inset:0">
+    <img src="${src||''}" alt="${alt}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>
+    <div class="ph"><span>${emj}</span></div>
+  </div>`;
+}
+
+/* ── RENDER TREND CARDS ── */
+function renderTrend(){
+  const el=document.getElementById('trend-scroll');
+  el.innerHTML=MENU.slice(0,5).map(item=>{
+    const src=liveImgs[item.id]||'';
+    return `<div class="trend-card card">
+      <div class="img-wrap food-img-wrap">
+        ${src?`<img src="${src}" alt="${item.name}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>`:''}
+        <div class="ph"><span style="font-size:40px">🌽</span></div>
+        <div class="price-badge">${fmtPrice(item.price)}</div>
+      </div>
+      <div class="body">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px">${item.tags.slice(0,2).map(makeTag).join('')}</div>
+        <div style="font-weight:900;font-size:13px;color:var(--navy);margin-bottom:5px;line-height:1.3">${item.name}</div>
+        <div style="font-size:11px;color:var(--gray400);margin-bottom:10px;line-height:1.5">${item.desc.slice(0,54)}…</div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          ${makeStars(item.rating,item.reviews,10)}
+          <button onclick="addToCart(${item.id})" style="background:linear-gradient(135deg,var(--green),var(--green-dark));border:none;border-radius:10px;width:30px;height:30px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-green);flex-shrink:0">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── RENDER CATEGORY GRID ── */
+function renderCatGrid(){
+  const cats=[
+    {label:"Starters",id:1, cat:"starters",count:4,desc:"Soups & snacks"},
+    {label:"Mains",   id:3, cat:"mains",   count:5,desc:"Hearty plates"},
+    {label:"Dessert", id:7, cat:"dessert", count:2,desc:"Sweet endings"},
+    {label:"Drinks",  id:9, cat:"drinks",  count:2,desc:"Cold & craft"},
+  ];
+  document.getElementById('cat-grid').innerHTML=cats.map(c=>{
+    const src=liveImgs[c.id]||'';
+    return `<button class="cat-btn" onclick="navTo('menu');setCat('${c.cat}')">
+      <div class="img-wrap food-img-wrap">
+        ${src?`<img src="${src}" alt="${c.label}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>`:''}
+        <div class="ph"><span style="font-size:40px">🌽</span></div>
+      </div>
+      <div class="overlay"></div>
+      <div class="info"><strong>${c.label}</strong><small>${c.count} items · ${c.desc}</small></div>
+    </button>`;
+  }).join('');
+}
+
+/* ── RENDER MENU ── */
+let menuCat='all';
+function setCat(c){menuCat=c;filterMenu()}
+function renderFilterPills(){
+  document.getElementById('filter-pills').innerHTML=CATS.map(c=>`
+    <button class="pill${menuCat===c?' active':''}" onclick="setCat('${c}')">${c.charAt(0).toUpperCase()+c.slice(1)}</button>
+  `).join('');
+}
+function filterMenu(){
+  const q=(document.getElementById('search-in').value||'').toLowerCase();
+  const cl=document.getElementById('search-clear');
+  cl.style.display=q?'block':'none';
+  const filtered=MENU.filter(m=>(menuCat==='all'||m.cat===menuCat)&&(!q||m.name.toLowerCase().includes(q)));
+  document.getElementById('menu-subtitle').textContent=`${filtered.length} items`;
+  renderFilterPills();
+  const el=document.getElementById('menu-list');
+  if(!filtered.length){
+    el.innerHTML=`<div style="text-align:center;padding:60px 32px;color:var(--gray400)"><div style="font-size:48px;margin-bottom:16px">🌽</div><div style="font-weight:800;font-size:16px;color:var(--navy);margin-bottom:8px">No results found</div><div style="font-size:13px">Try a different search or category</div></div>`;
+    return;
+  }
+  el.innerHTML=filtered.map(item=>{
+    const src=liveImgs[item.id]||'';
+    const isLiked=liked[item.id];
+    return `<div class="card menu-card" id="mc-${item.id}">
+      <div class="thumb food-img-wrap">
+        ${src?`<img src="${src}" alt="${item.name}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>`:''}
+        <div class="ph"><span style="font-size:40px">🌽</span></div>
+        <div class="cat-badge">${item.cat}</div>
+      </div>
+      <div class="body">
+        <div style="display:flex;flex-wrap:wrap;gap:5px">${item.tags.slice(0,2).map(makeTag).join('')}</div>
+        <div class="name">${item.name}</div>
+        <div class="desc">${item.desc.length>72?item.desc.slice(0,72)+'…':item.desc}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+          <div><div class="price">${fmtPrice(item.price)}</div>${makeStars(item.rating,item.reviews)}</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="like-${item.id}" class="like-btn${isLiked?' liked':''}" onclick="toggleLike(${item.id})">${isLiked?'❤️':'🤍'}</button>
+            <button class="add-btn ripple-wrap" onclick="addToCart(${item.id});ripple(event,this)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function clearSearch(){document.getElementById('search-in').value='';filterMenu()}
+function renderMenu(){renderFilterPills();filterMenu()}
+
+/* ── CART LOGIC ── */
+function addToCart(id){
+  const item=MENU.find(m=>m.id===id);
+  cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{...item,qty:1};
+  updateCartBadge();showToast(`🛒 ${item.name} added!`);
+  // pulse add btn
+  const btn=event&&event.target&&event.target.closest('.add-btn');
+  if(btn){btn.style.transform='scale(.85)';setTimeout(()=>btn.style.transform='',220)}
+}
+function updateQty(id,d){
+  if(!cart[id])return;
+  cart[id].qty=Math.max(0,cart[id].qty+d);
+  if(!cart[id].qty)delete cart[id];
+  updateCartBadge();renderCart();
+}
+function updateCartBadge(){
+  const total=Object.values(cart).reduce((s,i)=>s+i.qty,0);
+  const nb=document.getElementById('nav-cart');
+  let badge=nb.querySelector('.cart-badge');
+  if(total>0){
+    if(!badge){badge=document.createElement('span');badge.className='cart-badge';nb.prepend(badge)}
+    badge.textContent=total;badge.style.animation='none';requestAnimationFrame(()=>badge.style.animation='');
+  }else if(badge){badge.remove()}
+}
+function renderCart(){
+  const items=Object.values(cart);
+  const total=items.reduce((s,i)=>s+i.price*i.qty,0);
+  const disc=promoApplied?Math.round(total*.1):0;
+  const grand=total-disc+DELIVERY;
+  document.getElementById('cart-subtitle').textContent=items.length?`${items.reduce((s,i)=>s+i.qty,0)} items`:'';
+  const isEmpty=!items.length;
+  document.getElementById('cart-empty').style.display=isEmpty?'flex':'none';
+  document.getElementById('cart-content').style.display=isEmpty?'none':'block';
+  document.getElementById('confirmed-screen').classList.remove('show');
+  if(isEmpty)return;
+  document.getElementById('cart-items').innerHTML=items.map(item=>{
+    const src=liveImgs[item.id]||'';
+    return `<div class="cart-item">
+      <div class="thumb food-img-wrap">
+        ${src?`<img src="${src}" alt="${item.name}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>`:''}
+        <div class="ph"><span style="font-size:28px">🌽</span></div>
+      </div>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:14px;color:var(--navy);margin-bottom:3px">${item.name}</div>
+        <div style="font-size:13px;font-weight:900;color:var(--green)">${fmtPrice(item.price)}</div>
+        <div style="font-size:11px;color:var(--gray400);margin-top:2px">Subtotal: ${fmtPrice(item.price*item.qty)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
+        <span style="font-weight:900;font-size:15px;min-width:20px;text-align:center;color:var(--navy)">${item.qty}</span>
+        <button class="qty-btn plus" onclick="updateQty(${item.id},1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('sum-sub').textContent=fmtPrice(total);
+  const drow=document.getElementById('sum-disc-row');
+  drow.style.display=promoApplied?'flex':'none';
+  document.getElementById('sum-disc').textContent=`-${fmtPrice(disc)}`;
+  document.getElementById('sum-total').textContent=fmtPrice(grand);
+  document.getElementById('checkout-btn').textContent=`Place Order · ${fmtPrice(grand)}`;
+}
+function applyPromo(){
+  const code=document.getElementById('promo-in').value.trim().toLowerCase();
+  if(code==='corn10'){
+    promoApplied=true;
+    const btn=document.getElementById('promo-btn');
+    btn.textContent='✓';btn.style.background='var(--green-dark)';
+    document.getElementById('promo-in').style.borderColor='var(--green)';
+    showToast('🎉 10% discount applied!');
+  }else{showToast('❌ Invalid promo code')}
+  renderCart();
+}
+function checkout(){
+  const items=Object.values(cart);
+  if(!items.length)return;
+  const total=items.reduce((s,i)=>s+i.price*i.qty,0);
+  const disc=promoApplied?Math.round(total*.1):0;
+  const grand=total-disc+DELIVERY;
+  document.getElementById('cart-content').style.display='none';
+  document.getElementById('cart-empty').style.display='none';
+  const cs=document.getElementById('confirmed-screen');
+  cs.classList.add('show');
+  document.getElementById('confirmed-total').textContent=fmtPrice(grand);
+  cart={};promoApplied=false;
+  updateCartBadge();
+  showToast('🎉 Order placed successfully!');
+}
+function backHome(){
+  document.getElementById('confirmed-screen').classList.remove('show');
+  renderCart();navTo('home');
+}
+
+/* ── LIKE ── */
+function toggleLike(id){
+  liked[id]=!liked[id];
+  const btn=document.getElementById('like-'+id);
+  if(btn){btn.classList.toggle('liked',liked[id]);btn.textContent=liked[id]?'❤️':'🤍'}
+}
+
+/* ── TOAST ── */
+let toastTimer;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  el.style.display='flex';el.style.animation='none';
+  requestAnimationFrame(()=>{el.style.animation='toastIn .28s cubic-bezier(.34,1.56,.64,1)'});
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display='none',2800);
+}
+
+/* ── RIPPLE ── */
+function ripple(e,el){
+  const r=document.createElement('span');r.className='ripple-el';
+  const rect=el.getBoundingClientRect();
+  const sz=Math.max(rect.width,rect.height);
+  r.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px`;
+  el.appendChild(r);setTimeout(()=>r.remove(),600);
+}
+
+/* ── AI CHAT ── */
+function toggleChat(fabEl){
+  chatOpen=!chatOpen;
+  document.getElementById('chat-widget').classList.toggle('open',chatOpen);
+  const fab=document.getElementById('ai-fab');fab.classList.toggle('open',chatOpen);
+  if(chatOpen&&!document.getElementById('chat-msgs').children.length){
+    appendMsg('ai',"👋 Hi! I'm your AI Corn Sommelier. Ask me anything about our menu — I'm here to help!");
+  }
+}
+function setChip(txt){document.getElementById('chat-in').value=txt}
+function appendMsg(role,text){
+  const el=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.className=`msg ${role}`;d.textContent=text;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+async function sendChat(){
+  const input=document.getElementById('chat-in');
+  const m=input.value.trim();if(!m)return;
+  appendMsg('user',m);input.value='';
+  const btn=document.getElementById('chat-send-btn');btn.disabled=true;
+  const think=document.createElement('div');think.className='msg ai';think.innerHTML='<div class="spinner" style="border-color:rgba(100,116,139,.2);border-top-color:var(--gray400)"></div>';
+  document.getElementById('chat-msgs').appendChild(think);
+  document.getElementById('chat-msgs').scrollTop=9999;
+  const menuStr=MENU.map(x=>`${x.name} ₦${x.price}: ${x.desc} [${x.tags.join(', ')}]`).join('\n');
+  const sys=`You are the AI Food Sommelier at Corn Fusion Lagos. Be warm, friendly & concise. Only recommend from:\n${menuStr}\nMax 2 sentences. Use 1 emoji.`;
+  const history=[];
+  document.querySelectorAll('#chat-msgs .msg').forEach(d=>{if(!d.querySelector('.spinner'))history.push({role:d.classList.contains('user')?'user':'assistant',content:d.textContent})});
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:150,system:sys,messages:history})});
+    const data=await r.json();
+    think.remove();appendMsg('ai',data.content?.[0]?.text||"Try our Golden Corn Chowder! 🍲");
+  }catch{think.remove();appendMsg('ai',"Connection hiccup — Spicy Suya Corn Ribs are always a winner! 🌽")}
+  btn.disabled=false;
+}
+
+/* ── AI SOMMELIER ── */
+function toggleMood(btn){btn.classList.toggle('active')}
+async function getAIRecs(){
+  const moods=[...document.querySelectorAll('.mood-btn.active')].map(b=>b.dataset.mood);
+  if(!moods.length){showToast('⚠️ Pick at least one mood!');return}
+  const btn=document.getElementById('ai-rec-btn');
+  btn.innerHTML='<div class="spinner"></div> Analyzing…';btn.disabled=true;
+  document.getElementById('ai-recs-out').innerHTML='';
+  const menuStr=MENU.map(m=>`id:${m.id} "${m.name}" ₦${m.price} tags:[${m.tags.join(',')}]`).join('\n');
+  const prompt=`You are a food AI sommelier for Corn Fusion Lagos. Customer mood: ${moods.join(', ')}.\nMenu:\n${menuStr}\nRespond ONLY with valid JSON array of exactly 3 objects: [{"id":<number>,"reason":"<12 words max>"}]`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    const picks=JSON.parse((d.content?.[0]?.text||'[]').replace(/```json|```/g,'').trim());
+    const recs=picks.map(p=>({...MENU.find(m=>m.id===p.id),reason:p.reason})).filter(Boolean);
+    if(!recs.length){document.getElementById('ai-recs-out').innerHTML='<div style="color:rgba(255,255,255,.4);text-align:center;margin-top:16px;font-size:13px">No match – try different moods!</div>';return}
+    document.getElementById('ai-recs-out').innerHTML=`
+      <div style="margin-top:18px">
+        <div style="color:rgba(255,255,255,.5);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px">Your AI Picks</div>
+        <div class="ai-recs">${recs.map(item=>{
+          const src=liveImgs[item.id]||'';
+          return `<div class="ai-rec-card">
+            <div class="ai-rec-thumb food-img-wrap">
+              ${src?`<img src="${src}" alt="${item.name}" onload="this.classList.add('loaded')" onerror="this.style.display='none'"/>`:''}
+              <div class="ph"><span style="font-size:24px">🌽</span></div>
+            </div>
+            <div style="flex:1">
+              <div style="color:#fff;font-weight:800;font-size:13px">${item.name}</div>
+              <div style="color:var(--green);font-weight:900;font-size:13px">${fmtPrice(item.price)}</div>
+              <div style="color:rgba(255,255,255,.42);font-size:11px;margin-top:3px;font-style:italic">${item.reason}</div>
+            </div>
+          </div>`;
+        }).join('')}</div>
+      </div>`;
+  }catch{document.getElementById('ai-recs-out').innerHTML='<div style="color:rgba(255,255,255,.4);text-align:center;margin-top:16px;font-size:13px">Something went wrong. Please try again.</div>'}
+  btn.innerHTML='✨ Get Recommendations';btn.disabled=false;
+}
+
+/* ── BOOKING ── */
+function confirmBooking(){
+  const name=document.getElementById('book-name').value.trim();
+  const date=document.getElementById('book-date').value;
+  if(!name||!date){showToast('⚠️ Please fill all fields');return}
+  const guests=document.getElementById('book-guests').value;
+  const time=document.getElementById('book-time').value;
+  document.getElementById('book-body').innerHTML=`
+    <div class="booked-state">
+      <div style="font-size:56px;margin-bottom:14px">✅</div>
+      <div style="font-weight:900;color:var(--green);font-size:18px">Booking Confirmed!</div>
+      <div style="color:var(--gray400);font-size:13px;margin-top:6px;line-height:1.6">${date} · ${guests} · ${time}</div>
+      <div style="color:var(--gray400);font-size:12px;margin-top:4px">We'll see you soon, ${name}! 🌽</div>
+      <button onclick="resetBooking()" style="margin-top:18px;background:var(--gray100);border:none;border-radius:16px;padding:10px 22px;font-weight:700;font-size:13px;cursor:pointer;color:var(--gray700)">New Booking</button>
+    </div>`;
+  showToast('🎉 Table booked!');
+}
+function resetBooking(){
+  document.getElementById('book-body').innerHTML=`
+    <input class="field-input w-full" id="book-name" placeholder="Your name" style="margin-bottom:12px"/>
+    <div class="field-grid">
+      <div><div class="field-label">DATE</div><input type="date" class="field-select w-full" id="book-date"/></div>
+      <div><div class="field-label">GUESTS</div>
+        <select class="field-select w-full" id="book-guests">
+          <option>1 Person</option><option selected>2 People</option><option>3 People</option><option>4 People</option><option>5+ People</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:18px"><div class="field-label">TIME</div>
+      <select class="field-select w-full" id="book-time">
+        <option>12:00 PM</option><option>1:00 PM</option><option>6:00 PM</option><option selected>7:00 PM</option><option>8:00 PM</option><option>9:00 PM</option>
+      </select>
+    </div>
+    <button class="btn-navy ripple-wrap" onclick="confirmBooking();ripple(event,this)">Confirm Reservation</button>`;
+}
+
+/* ── INIT ── */
+renderTrend();renderMenu();renderCatGrid();renderCart();
+loadAllImages();
+
+// Load lazy images (avatars etc)
+document.querySelectorAll('img[data-src]').forEach(img=>{
+  const src=img.dataset.src;if(!src)return;
+  img.src=src;img.onload=()=>img.classList.add('loaded');
+});
+</script>
+</body>
+      </html>
